@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Все посты
+{% endblock %}
+
+{% block content %}
+    <section class="latest section">
+        <div class="section-inner">
+{#            <h2 class="heading">Latest Projects</h2>#}
+            <div class="content">
+                {% for latest_post in posts|slice:':1' %}
+                    <div class="item featured text-center">
+                        <h3 class="title"><a
+                                href="http://themes.3rdwavemedia.com/website-templates/responsive-bootstrap-theme-for-products-velocity/"
+                                target="_blank">{{ latest_post.title }}</a></h3>
+                        <p></p>
+                        <hr class="divider"/>
+                        <div class="featured-image">
+                            <a href="http://themes.3rdwavemedia.com/website-templates/responsive-bootstrap-theme-for-products-velocity/"
+                               target="_blank">
+                                <img class="img-responsive project-image"
+                                     src="{{ latest_post.image.url }}" alt="project name"/>
+                            </a>
+                            <div class="ribbon">
+                                <div class="text">New</div>
+                            </div>
+                        </div>
+
+                        <div class="desc text-left">
+                            {{ latest_post.content|truncatewords:16 }}
+                        </div><!--//desc-->
+                        <a class="btn btn-cta-secondary"
+                           href="http://themes.3rdwavemedia.com/website-templates/responsive-bootstrap-theme-for-products-velocity/"
+                           target="_blank"><i class="fa fa-thumbs-o-up"></i> Back my project</a>
+                    </div><!--//item-->
+                {% endfor %}
+                <hr class="divider"/>
+                {% for post in posts|slice:'1:' %}
+                    <div class="item row">
+                        <a class="col-md-4 col-sm-4 col-xs-12"
+                           href="http://themes.3rdwavemedia.com/website-templates/responsive-bootstrap-theme-mobile-apps-atom/"
+                           target="_blank">
+                            <img class="img-responsive project-image" src="{{ post.image.url }}"
+                                 alt="project name"/>
+                        </a>
+                        <div class="desc col-md-8 col-sm-8 col-xs-12">
+                            <h3 class="title"><a
+                                    href="http://themes.3rdwavemedia.com/website-templates/responsive-bootstrap-theme-mobile-apps-atom/"
+                                    target="_blank">{{ post.title }}</a></h3>
+                            <p>{{ post.content|truncatewords:16 }}</p>
+                            <p><a class="more-link"
+                                  href="http://themes.3rdwavemedia.com/website-templates/responsive-bootstrap-theme-mobile-apps-atom/"
+                                  target="_blank"><i class="fa fa-external-link"></i> Find out more</a></p>
+                        </div><!--//desc-->
+                    </div><!--//item-->
+                {% endfor %}
+            </div><!--//content-->
+        </div><!--//section-inner-->
+    </section><!--//section-->
+
+{% endblock %}

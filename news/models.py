@@ -20,6 +20,11 @@ class Tag(models.Model):
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(Tag, self).save(*args, **kwargs)
+
     # def get_absolute_url(self):
     #     return reverse('tag-detail-url', kwargs={'slug': self.slug})
     #
@@ -38,7 +43,7 @@ class Post(models.Model):
     )
     title = models.CharField('Заголовок', max_length=200, db_index=True)
     content = models.TextField(verbose_name='Содержание')
-    image = models.ImageField(upload_to='posts/%Y/%m/%d/', blank=True)
+    image = models.ImageField(upload_to='posts/%Y%m%d/', blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='blog_posts')
     publish = models.DateTimeField(default=timezone.now)
