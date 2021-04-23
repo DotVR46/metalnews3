@@ -1,65 +1,111 @@
-jQuery(document).ready(function($) {
+/*  ---------------------------------------------------
+    Theme Name: Anime
+    Description: Anime video tamplate
+    Author: Colorib
+    Author URI: https://colorib.com/
+    Version: 1.0
+    Created: Colorib
+---------------------------------------------------------  */
+
+'use strict';
+
+(function ($) {
+
+    /*------------------
+        Preloader
+    --------------------*/
+    $(window).on('load', function () {
+        $(".loader").fadeOut();
+        $("#preloder").delay(200).fadeOut("slow");
 
 
-    /*======= Skillset *=======*/
-    
-    $('.level-bar-inner').css('width', '0');
-    
-    $(window).on('load', function() {
+        /*------------------
+            FIlter
+        --------------------*/
+        $('.filter__controls li').on('click', function () {
+            $('.filter__controls li').removeClass('active');
+            $(this).addClass('active');
 
-        $('.level-bar-inner').each(function() {
-        
-            var itemWidth = $(this).data('level');
-            
-            $(this).animate({
-                width: itemWidth
-            }, 800);
-            
+
         });
 
+        if ($('.filter__gallery').length > 0) {
+            var containerEl = document.querySelector('.filter__gallery');
+            var mixer = mixitup(containerEl);
+        }
+
     });
-    
-    /* Bootstrap Tooltip for Skillset */
-    $('.level-label').tooltip();
-    
-    
-    /* jQuery RSS - https://github.com/sdepold/jquery-rss */
-    
-    $("#rss-feeds").rss(
-    
-        //Change this to your own rss feeds
-        "http://feeds.feedburner.com/TechCrunch/startups",
-        
-        {
-        // how many entries do you want?
-        // default: 4
-        // valid values: any integer
-        limit: 3,
-        
-        // the effect, which is used to let the entries appear
-        // default: 'show'
-        // valid values: 'show', 'slide', 'slideFast', 'slideSynced', 'slideFastSynced'
-        effect: 'slideFastSynced',
-        
-        // outer template for the html transformation
-        // default: "<ul>{entries}</ul>"
-        // valid values: any string
-        layoutTemplate: "<div class='item'>{entries}</div>",
-        
-        // inner template for each entry
-        // default: '<li><a href="{url}">[{author}@{date}] {title}</a><br/>{shortBodyPlain}</li>'
-        // valid values: any string
-        entryTemplate: '<h3 class="title"><a href="{url}" target="_blank">{title}</a></h3><div><p>{shortBodyPlain}</p><a class="more-link" href="{url}" target="_blank"><i class="fa fa-external-link"></i>Read more</a></div>'
-        
+
+    $(window).on('load',
+        function () {
+            $('div .filter__controls li[data-filter=".day"]').click()
         }
     );
-    
-    /* Github Calendar - https://github.com/IonicaBizau/github-calendar */
-    GitHubCalendar("#github-graph", "IonicaBizau");
-    
-    
-    /* Github Activity Feed - https://github.com/caseyscarborough/github-activity */
-    GitHubActivity.feed({ username: "caseyscarborough", selector: "#ghfeed" });
+    /*------------------
+        Background Set
+    --------------------*/
+    $('.set-bg').each(function () {
+        var bg = $(this).data('setbg');
+        $(this).css('background-image', 'url(' + bg + ')');
+    });
 
+    // Search model
+    $('.search-switch').on('click', function () {
+        $('.search-model').fadeIn(400);
+    });
 
-});
+    $('.search-close-switch').on('click', function () {
+        $('.search-model').fadeOut(400, function () {
+            $('#search-input').val('');
+        });
+    });
+
+    /*------------------
+		Navigation
+	--------------------*/
+    $(".mobile-menu").slicknav({
+        prependTo: '#mobile-menu-wrap',
+        allowParentLinks: true
+    });
+
+    /*------------------
+		Hero Slider
+	--------------------*/
+    var hero_s = $(".hero__slider");
+    hero_s.owlCarousel({
+        loop: true,
+        margin: 0,
+        items: 1,
+        dots: true,
+        nav: true,
+        navText: ["<span class='arrow_carrot-left'></span>", "<span class='arrow_carrot-right'></span>"],
+        animateOut: 'fadeOut',
+        animateIn: 'fadeIn',
+        smartSpeed: 1200,
+        autoHeight: false,
+        autoplay: true,
+        mouseDrag: false
+    });
+
+    /*------------------
+        Video Player
+    --------------------*/
+    const player = new Plyr('#player', {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'captions', 'settings', 'fullscreen'],
+        seekTime: 25
+    });
+
+    /*------------------
+        Niceselect
+    --------------------*/
+    $('select').niceSelect();
+
+    /*------------------
+        Scroll To Top
+    --------------------*/
+    $("#scrollToTopButton").click(function () {
+        $("html, body").animate({scrollTop: 0}, "slow");
+        return false;
+    });
+
+})(jQuery);

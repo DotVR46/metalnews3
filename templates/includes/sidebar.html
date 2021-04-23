@@ -1,0 +1,85 @@
+{% load static %}
+<div class="col-lg-4 col-md-6 col-sm-8">
+    <div class="product__sidebar">
+        <div class="product__sidebar__view">
+            <div class="section-title">
+                <h5>Лучшее за:</h5>
+            </div>
+            <ul class="filter__controls">
+                <li class="active" data-filter=".day">День</li>
+                <li data-filter=".week">Неделю</li>
+                <li data-filter=".month">Месяц</li>
+                <li data-filter=".years">Все время</li>
+
+            </ul>
+
+            <div class="filter__gallery">
+                {% for pop_post in popular_day %}
+                    <div class="product__sidebar__view__item set-bg mix day"
+                         data-setbg="{{ pop_post.image.url }}">
+                        <div class="ep">18 / ?</div>
+                        <div class="view"><i class="fa fa-eye"></i> {{ pop_post.views }}</div>
+                        <h5><a href="{{ pop_post.get_absolute_url }}">{{ pop_post.title }}</a></h5>
+                    </div>
+                {% endfor %}
+                {% for pop_post in popular_week %}
+                    <div class="product__sidebar__view__item set-bg mix week"
+                         data-setbg="{{ pop_post.image.url }}">
+                        <div class="ep">18 / ?</div>
+                        <div class="view"><i class="fa fa-eye"></i> {{ pop_post.views }}</div>
+                        <h5><a href="{{ pop_post.get_absolute_url }}">{{ pop_post.title }}</a></h5>
+                    </div>
+                {% endfor %}
+                {% for pop_post in popular_month %}
+                    <div class="product__sidebar__view__item set-bg mix month"
+                         data-setbg="{{ pop_post.image.url }}">
+                        <div class="ep">18 / ?</div>
+                        <div class="view"><i class="fa fa-eye"></i> {{ pop_post.views }}</div>
+                        <h5><a href="{{ pop_post.get_absolute_url }}">{{ pop_post.title }}</a></h5>
+                    </div>
+                {% endfor %}
+                {% for pop_post in popular_years %}
+                    <div class="product__sidebar__view__item set-bg mix years"
+                         data-setbg="{{ pop_post.image.url }}">
+                        <div class="ep">18 / ?</div>
+                        <div class="view"><i class="fa fa-eye"></i> {{ pop_post.views }}</div>
+                        <h5><a href="{{ pop_post.get_absolute_url }}">{{ pop_post.title }}</a></h5>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        <div class="product__sidebar__comment">
+            <div class="section-title">
+                <h5>Новые комментарии</h5>
+            </div>
+            {% for comment in comments %}
+                <div class="product__sidebar__comment__item">
+                    <div class="product__sidebar__comment__item__pic">
+                        <img src="{{ comment.post.image.url }}" alt="">
+                    </div>
+                    <div class="product__sidebar__comment__item__text">
+                        <ul>
+                            {% for tag in comment.post.tags.all %}
+                                <li>{{ tag.title }}</li>
+                            {% endfor %}
+                        </ul>
+                        <h5><a href="{{ comment.post.get_absolute_url }}">{{ comment.post.title }}</a></h5>
+                        <span><i class="fa fa-eye"></i> {{ comment.post.views }}</span>
+                        <hr>
+
+                        <figure class="text-end">
+                            <blockquote class="blockquote">
+                                <p style="color: white">{{ comment.text }}</p>
+                            </blockquote>
+                            <figcaption class="blockquote-footer">
+                                Автор: <cite title="Source Title">{{ comment.name }}</cite>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <hr style="color: #e53637; height: 1px; background-color: #e53637">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
