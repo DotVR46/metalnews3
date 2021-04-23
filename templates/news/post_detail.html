@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}{{ post.title }}{% endblock %}
 {% block content %}
+
     <!-- Blog Details Section Begin -->
     <section class="blog-details spad">
         <div class="container">
             <div class="row d-flex justify-content-center">
                 <div class="col-lg-8">
                     <div class="blog__details__title">
-                        <h6>Action, Magic <span>- March 08, 2020</span></h6>
-                        <h2>Anime for Beginners: 20 Pieces of Essential Viewing</h2>
+                        <h6>{% for tag in post.tags.all %}{{ tag }} {% endfor %}<span>- {{ post.publish }}</span></h6>
+                        <h2>{{ post.title }}</h2>
                         <div class="blog__details__social">
                             <a href="#" class="facebook"><i class="fa fa-facebook-square"></i> Facebook</a>
                             <a href="#" class="pinterest"><i class="fa fa-pinterest"></i> Pinterest</a>
@@ -56,8 +58,10 @@
                                         </div>
                                     </div>
                                 {% endif %}
+
                             </div>
                         </div>
+
                         <div class="blog__details__comment" id="comments">
                             <h4>{{ post.comment_set.count }} Комментов</h4>
                             {% for comment in post.get_comment %}
@@ -68,10 +72,20 @@
                                     <div class="blog__details__comment__item__text">
                                         <span>{{ comment.created }}</span>
                                         <h5>{{ comment.name }}</h5>
+
                                         <p>{{ comment.text }}</p>
-                                        {#                                        <a href="#">Like</a>#}
+                                        <a data-id="{{ comment.id }}" data-type="comment" data-action="like"><i
+                                                class="far fa-thumbs-up"
+                                                data-count="like">{{ comment.votes.likes.count }}</i>
+                                        </a>
+                                        <a data-id="{{ comment.id }}" data-type="comment" data-action="dislike"><i
+                                                class="far fa-thumbs-down"
+                                                data-count="dislike">{{ comment.votes.dislikes.count }}</i>
+                                        </a>
+
                                         <a href="#formComment"
                                            onclick="addCommentReply('{{ comment.name }}', '{{ comment.id }}')">Ответить</a>
+
                                     </div>
                                 </div>
                                 {% for com_re in comment.comment_set.all %}
@@ -83,7 +97,14 @@
                                             <span>{{ com_re.created }}</span>
                                             <h5>{{ com_re.name }}</h5>
                                             <p>{{ com_re.text }}</p>
-                                            {#                                            <a href="#">Like</a>#}
+                                            <a data-id="{{ com_re.id }}" data-type="comment" data-action="like"><i
+                                                    class="far fa-thumbs-up"
+                                                    data-count="like">{{ com_re.votes.likes.count }}</i>
+                                            </a>
+                                            <a data-id="{{ com_re.id }}" data-type="comment" data-action="dislike"><i
+                                                    class="far fa-thumbs-down"
+                                                    data-count="dislike">{{ com_re.votes.dislikes.count }}</i>
+                                            </a>
                                             <a href="#formComment"
                                                onclick="addCommentReply('{{ comment.name }}', '{{ comment.id }}')">Ответить</a>
                                         </div>

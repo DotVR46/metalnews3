@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
-# from django.utils.text import slugify
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.template.defaultfilters import slugify as django_slugify
 
 alphabet = {'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
@@ -24,6 +26,53 @@ def get_covers_upload_path(instance, filename):
 
 def get_band_upload_path(instance, filename):
     return f'band/{instance.name}/{filename}'
+
+
+class LikeDislikeManager(models.Manager):
+    use_for_related_fields = True
+
+    def likes(self):
+        # Забираем queryset с записями больше 0
+        return self.get_queryset().filter(vote__gt=0)
+
+    def dislikes(self):
+        # Забираем queryset с записями меньше 0
+        return self.get_queryset().filter(vote__lt=0)
+
+    def sum_rating(self):
+        # Забираем суммарный рейтинг
+        return self.get_queryset().aggregate(Sum('vote')).get('vote__sum') or 0
+
+    def articles(self):
+        return self.get_queryset().filter(content_type__model='post').order_by('-posts__publish')
+
+    def comments(self):
+        return self.get_queryset().filter(content_type__model='comment').order_by('-comments__publish')
+
+    def albums(self):
+        return self.get_queryset().filter(content_type__model='album').order_by('-albums__release_date')
+
+    def bands(self):
+        return self.get_queryset().filter(content_type__model='band').order_by('-bands__name')
+
+
+class LikeDislike(models.Model):
+    LIKE = 1
+    DISLIKE = -1
+
+    VOTES = (
+        (DISLIKE, 'Не коза'),
+        (LIKE, 'Коза')
+    )
+
+    vote = models.SmallIntegerField(verbose_name="Голос", choices=VOTES)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+
+    objects = LikeDislikeManager()
 
 
 class Category(models.Model):
@@ -86,6 +135,7 @@ class Post(models.Model):
     slug = models.SlugField(max_length=200, blank=True, unique=True)
     tags = models.ManyToManyField(Tag, verbose_name='Теги', blank=True, related_name='post_tags')
     views = models.PositiveIntegerField(default=0)
+    votes = GenericRelation(LikeDislike, related_query_name='posts')
 
     class Meta:
         ordering = ('-publish',)
@@ -114,7 +164,6 @@ class Post(models.Model):
 
 class Comment(models.Model):
     """Комментарии к постам"""
-    # TODO: добавить дату добавления к комментарию
 
     email = models.EmailField()
     name = models.CharField('Имя', max_length=100)
@@ -124,6 +173,7 @@ class Comment(models.Model):
     )
     post = models.ForeignKey(Post, verbose_name='Новость', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, null=True)
+    votes = GenericRelation(LikeDislike, related_query_name='comments')
 
     def __str__(self):
         return f'{self.name} - {self.post}'
@@ -162,6 +212,7 @@ class Band(models.Model):
     styles = models.ManyToManyField(MusicStyle, verbose_name='Стили/Жанры',
                                     related_name='band_style')
     slug = models.SlugField(max_length=200, blank=True)
+    votes = GenericRelation(LikeDislike, related_query_name='bands')
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -199,6 +250,7 @@ class Album(models.Model):
     label = models.ForeignKey(MusicLabel, verbose_name='Лейбл', on_delete=models.CASCADE)
     cover = models.ImageField(verbose_name='Обложка', upload_to=get_covers_upload_path)
     slug = models.SlugField(max_length=160, unique=True, blank=True)
+    votes = GenericRelation(LikeDislike, related_query_name='albums')
 
     def save(self, *args, **kwargs):
         if not self.slug:
