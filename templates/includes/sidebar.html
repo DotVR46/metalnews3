@@ -25,7 +25,7 @@
                 {% for pop_post in popular_week %}
                     <div class="product__sidebar__view__item set-bg mix week"
                          data-setbg="{{ pop_post.image.url }}">
-                        <div class="ep">18 / ?</div>
+                        <div class="ep"><i class="fas fa-fire-alt"></i> {{ pop_post.votes.sum_rating }}</div>
                         <div class="view"><i class="fa fa-eye"></i> {{ pop_post.views }}</div>
                         <h5><a href="{{ pop_post.get_absolute_url }}">{{ pop_post.title }}</a></h5>
                     </div>

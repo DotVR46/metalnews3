@@ -27,15 +27,15 @@ class MainPage(ListView):
         context['comments'] = Comment.objects.all().order_by('-created')[:3]
         context['popular_day'] = Post.objects.all().filter(
             publish__range=[timezone.now() - timezone.timedelta(days=1), timezone.now()]).annotate(
-            sum_views=Sum('views')).order_by('-sum_views')[:3]
+            sum_views=Sum('views'), sum_votes=Sum('votes')).order_by('-sum_views', 'sum_votes')[:3]
         context['popular_week'] = Post.objects.all().filter(
             publish__range=[timezone.now() - timezone.timedelta(days=7), timezone.now()]).annotate(
-            sum_views=Sum('views')).order_by('-sum_views')[:3]
+            sum_views=Sum('views'), sum_votes=Sum('votes')).order_by('-sum_views', 'sum_votes')[:3]
         context['popular_month'] = Post.objects.all().filter(
             publish__range=[timezone.now() - timezone.timedelta(days=30), timezone.now()]).annotate(
-            sum_views=Sum('views')).order_by('-sum_views')[:3]
+            sum_views=Sum('views'), sum_votes=Sum('votes')).order_by('-sum_views', 'sum_votes')[:3]
         context['popular_years'] = Post.objects.all().annotate(
-            sum_views=Sum('views')).order_by('-sum_views')[:3]
+            sum_views=Sum('views'), sum_votes=Sum('votes')).order_by('-sum_views', 'sum_votes')[:3]
         return context
 
 
