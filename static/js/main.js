@@ -49,6 +49,16 @@
         $(this).css('background-image', 'url(' + bg + ')');
     });
 
+
+    $('#likecheck').click(function () {
+        $('#likecheck').addClass('likeCheck');
+        $('#dislikecheck').removeClass('likeCheck').removeAttr('style');
+    });
+    $('#dislikecheck').click(function () {
+        $('#dislikecheck').addClass('likeCheck');
+        $('#likecheck').removeClass('likeCheck').removeAttr('style');
+    });
+
     // Search model
     $('.search-switch').on('click', function () {
         $('.search-model').fadeIn(400);
@@ -130,13 +140,12 @@ function getCookie(name) {
 // Настройка AJAX
 $(function () {
     $.ajaxSetup({
-        headers: { "X-CSRFToken": getCookie("csrftoken") }
+        headers: {"X-CSRFToken": getCookie("csrftoken")}
     });
 });
 
 
-function like()
-{
+function like() {
     var like = $(this);
     var type = like.data('type');
     var pk = like.data('id');
@@ -144,11 +153,11 @@ function like()
     var dislike = like.next();
 
     $.ajax({
-        url : "/" + type +"/" + pk + "/" + action + "/",
-        type : 'POST',
-        data : { 'obj' : pk },
+        url: "/" + type + "/" + pk + "/" + action + "/",
+        type: 'POST',
+        data: {'obj': pk},
 
-        success : function (json) {
+        success: function (json) {
             like.find("[data-count='like']").text(json.like_count);
             dislike.find("[data-count='dislike']").text(json.dislike_count);
         }
@@ -157,8 +166,7 @@ function like()
     return false;
 }
 
-function dislike()
-{
+function dislike() {
     var dislike = $(this);
     var type = dislike.data('type');
     var pk = dislike.data('id');
@@ -166,11 +174,11 @@ function dislike()
     var like = dislike.prev();
 
     $.ajax({
-        url : "/" + type +"/" + pk + "/" + action + "/",
-        type : 'POST',
-        data : { 'obj' : pk },
+        url: "/" + type + "/" + pk + "/" + action + "/",
+        type: 'POST',
+        data: {'obj': pk},
 
-        success : function (json) {
+        success: function (json) {
             dislike.find("[data-count='dislike']").text(json.dislike_count);
             like.find("[data-count='like']").text(json.like_count);
         }
@@ -180,7 +188,7 @@ function dislike()
 }
 
 // Подключение обработчиков
-$(function() {
+$(function () {
     $('[data-action="like"]').click(like);
     $('[data-action="dislike"]').click(dislike);
 });

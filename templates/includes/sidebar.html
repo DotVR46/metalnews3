@@ -17,7 +17,8 @@
                 {% for pop_post in popular_day %}
                     <div class="product__sidebar__view__item set-bg mix day"
                          data-setbg="{{ pop_post.image.url }}">
-                        <div class="ep"><i class="fas fa-fire-alt"></i> {{ pop_post.votes.sum_rating }}</div>
+                        <div class="ep">{% if pop_post.votes.sum_rating < 0 %}<i class="fas fa-poop ">{% else %}
+                            <i class="fas fa-fire-alt">{% endif %}</i> {{ pop_post.votes.sum_rating }}</div>
                         <div class="view"><i class="fa fa-eye"></i> {{ pop_post.views }}</div>
                         <h5><a href="{{ pop_post.get_absolute_url }}">{{ pop_post.title }}</a></h5>
                     </div>
@@ -25,7 +26,8 @@
                 {% for pop_post in popular_week %}
                     <div class="product__sidebar__view__item set-bg mix week"
                          data-setbg="{{ pop_post.image.url }}">
-                        <div class="ep"><i class="fas fa-fire-alt"></i> {{ pop_post.votes.sum_rating }}</div>
+                        <div class="ep">{% if pop_post.votes.sum_rating < 0 %}<i class="fas fa-poop ">{% else %}
+                            <i class="fas fa-fire-alt">{% endif %}</i> {{ pop_post.votes.sum_rating }}</div>
                         <div class="view"><i class="fa fa-eye"></i> {{ pop_post.views }}</div>
                         <h5><a href="{{ pop_post.get_absolute_url }}">{{ pop_post.title }}</a></h5>
                     </div>
@@ -33,7 +35,8 @@
                 {% for pop_post in popular_month %}
                     <div class="product__sidebar__view__item set-bg mix month"
                          data-setbg="{{ pop_post.image.url }}">
-                        <div class="ep"><i class="fas fa-fire-alt"></i> {{ pop_post.votes.sum_rating }}</div>
+                        <div class="ep">{% if pop_post.votes.sum_rating < 0 %}<i class="fas fa-poop ">{% else %}
+                            <i class="fas fa-fire-alt">{% endif %}</i> {{ pop_post.votes.sum_rating }}</div>
                         <div class="view"><i class="fa fa-eye"></i> {{ pop_post.views }}</div>
                         <h5><a href="{{ pop_post.get_absolute_url }}">{{ pop_post.title }}</a></h5>
                     </div>
@@ -41,7 +44,8 @@
                 {% for pop_post in popular_years %}
                     <div class="product__sidebar__view__item set-bg mix years"
                          data-setbg="{{ pop_post.image.url }}">
-                        <div class="ep"><i class="fas fa-fire-alt"></i> {{ pop_post.votes.sum_rating }}</div>
+                        <div class="ep">{% if pop_post.votes.sum_rating < 0 %}<i class="fas fa-poop ">{% else %}
+                            <i class="fas fa-fire-alt">{% endif %}</i> {{ pop_post.votes.sum_rating }}</div>
                         <div class="view"><i class="fa fa-eye"></i> {{ pop_post.views }}</div>
                         <h5><a href="{{ pop_post.get_absolute_url }}">{{ pop_post.title }}</a></h5>
                     </div>
@@ -61,7 +65,7 @@
                     <div class="product__sidebar__comment__item__text">
                         <ul>
                             {% for tag in comment.post.tags.all %}
-                                <li>{{ tag.title }}</li>
+                                <li>{{ tag }}</li>
                             {% endfor %}
                         </ul>
                         <h5><a href="{{ comment.post.get_absolute_url }}">{{ comment.post.title }}</a></h5>
@@ -70,7 +74,7 @@
 
                         <figure class="text-end">
                             <blockquote class="blockquote">
-                                <p style="color: white">{{ comment.text }}</p>
+                                <p style="color: white">{{ comment.text|truncatewords:10 }}</p>
                             </blockquote>
                             <figcaption class="blockquote-footer">
                                 Автор: <cite title="Source Title">{{ comment.name }}</cite>

@@ -24,7 +24,7 @@ admin.site.register(Album)
 admin.site.register(Review)
 admin.site.register(MusicStyle)
 admin.site.register(MusicLabel)
-admin.site.register(Tag)
+# admin.site.register(Tag)
 admin.site.register(Category)
 admin.site.register(Comment)
 

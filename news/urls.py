@@ -8,6 +8,7 @@ urlpatterns = [
     path('', MainPage.as_view(), name='post_list'),
     path('<str:slug>/', post_detail, name='post_detail'),
     path('comment/<str:slug>/', AddComment.as_view(), name='add_comment'),
+    path('category/<str:category_name>', CategoryListView.as_view(), name='category_post_list'),
     path('post/<int:pk>/like/',
          login_required(VotesView.as_view(model=Post, vote_type=LikeDislike.LIKE)),
          name='post_like'),

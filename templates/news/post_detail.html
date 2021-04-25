@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load like_user_check %}
 {% block title %}{{ post.title }}{% endblock %}
 {% block content %}
 
@@ -41,123 +42,136 @@
                                     <h5>Оцени новость:</h5>
                                 </div>
                                 <div class="col-lg-4 mb-4">
-                                    <a data-id="{{ post.id }}" data-type="post" data-action="like"><i
-                                            class="far fa-thumbs-up"
+
+                                    <a data-id="{{ post.id }}" data-type="post" data-action="like"
+                                       {% if post.votes.likes.all|user_in:user %}style="background: #e53637"{% endif %}
+                                       id="likecheck"><i
+                                            class="fas fa-fire-alt"
                                             data-count="like">{{ post.votes.likes.count }}</i>
                                     </a>
-                                    <a data-id="{{ post.id }}" data-type="post" data-action="dislike"><i
-                                            class="far fa-thumbs-down"
+                                    <a data-id="{{ post.id }}" data-type="post" data-action="dislike"
+                                       {% if post.votes.dislikes.all|user_in:user %}style="background: #e53637"{% endif %}
+                                       id="dislikecheck"><i
+                                            class="fas fa-poop"
                                             data-count="dislike">{{ post.votes.dislikes.count }}</i>
                                     </a>
                                 </div>
 
                             </div>
                         </div>
-                            <div class="blog__details__btns">
-                                <div class="row">
-                                    {% if post.get_previous_by_created %}
-                                        <div class="col-lg-6">
-                                            <div class="blog__details__btns__item">
-                                                <h5>
-                                                    <a href="{% url 'news:post_detail' post.get_previous_by_created.slug %}"><span
-                                                            class="arrow_left"></span>
-                                                        {{ post.get_previous_by_created.title }}</a>
-                                                </h5>
-                                            </div>
+                        <div class="blog__details__btns">
+                            <div class="row">
+                                {% if post.get_previous_by_created %}
+                                    <div class="col-lg-6">
+                                        <div class="blog__details__btns__item">
+                                            <h5>
+                                                <a href="{% url 'news:post_detail' post.get_previous_by_created.slug %}"><span
+                                                        class="arrow_left"></span>
+                                                    {{ post.get_previous_by_created.title }}</a>
+                                            </h5>
                                         </div>
-                                    {% endif %}
-                                    {% if post.get_next_by_created %}
-                                        <div class="col-lg-6">
-                                            <div class="blog__details__btns__item next__btn">
-                                                <h5>
-                                                    <a href="{% url 'news:post_detail' post.get_next_by_created.slug %}">{{ post.get_next_by_created.title }}
-                                                        <span
-                                                                class="arrow_right"></span></a></h5>
-                                            </div>
+                                    </div>
+                                {% endif %}
+                                {% if post.get_next_by_created %}
+                                    <div class="col-lg-6">
+                                        <div class="blog__details__btns__item next__btn">
+                                            <h5>
+                                                <a href="{% url 'news:post_detail' post.get_next_by_created.slug %}">{{ post.get_next_by_created.title }}
+                                                    <span
+                                                            class="arrow_right"></span></a></h5>
                                         </div>
-                                    {% endif %}
-
-                                </div>
+                                    </div>
+                                {% endif %}
 
                             </div>
 
-                            <div class="blog__details__comment" id="comments">
-                                <h4>{{ post.comment_set.count }} Комментов</h4>
-                                {% for comment in post.get_comment %}
-                                    <div class="blog__details__comment__item">
+                        </div>
+
+                        <div class="blog__details__comment" id="comments">
+                            <h4>{{ post.comment_set.count }} Комментов</h4>
+                            {% for comment in post.get_comment %}
+                                <div class="blog__details__comment__item">
+                                    <div class="blog__details__comment__item__pic">
+                                        <img src="{% static 'img/blog/details/default_comment.png' %}" alt="">
+                                    </div>
+                                    <div class="blog__details__comment__item__text">
+                                        <span>{{ comment.created }}</span>
+                                        <h5>{{ comment.name }}</h5>
+
+                                        <p>{{ comment.text }}</p>
+                                        <a data-id="{{ comment.id }}" data-type="comment" data-action="like"
+                                           {% if comment.votes.likes.all|user_in:user %}style="background: #e53637"{% endif %}
+                                           id="likecheck"><i
+                                                class="far fa-thumbs-up"
+                                                data-count="like">{{ comment.votes.likes.count }}</i>
+                                        </a>
+                                        <a data-id="{{ comment.id }}" data-type="comment" data-action="dislike"
+                                           {% if comment.votes.dislikes.all|user_in:user %}style="background: #e53637"{% endif %}
+                                           id="dislikecheck"><i
+                                                class="far fa-thumbs-down"
+                                                data-count="dislike">{{ comment.votes.dislikes.count }}</i>
+                                        </a>
+
+                                        <a href="#formComment"
+                                           onclick="addCommentReply('{{ comment.name }}', '{{ comment.id }}')">Ответить</a>
+
+                                    </div>
+                                </div>
+                                {% for com_re in comment.comment_set.all %}
+                                    <div class="blog__details__comment__item blog__details__comment__item--reply">
                                         <div class="blog__details__comment__item__pic">
                                             <img src="{% static 'img/blog/details/default_comment.png' %}" alt="">
                                         </div>
                                         <div class="blog__details__comment__item__text">
-                                            <span>{{ comment.created }}</span>
-                                            <h5>{{ comment.name }}</h5>
-
-                                            <p>{{ comment.text }}</p>
-                                            <a data-id="{{ comment.id }}" data-type="comment" data-action="like"><i
+                                            <span>{{ com_re.created }}</span>
+                                            <h5>{{ com_re.name }}</h5>
+                                            <p>{{ com_re.text }}</p>
+                                            <a data-id="{{ com_re.id }}" data-type="comment" data-action="like"
+                                               {% if com_re.votes.likes.all|user_in:user %}style="background: #e53637"{% endif %}
+                                               id="likecheck"><i
                                                     class="far fa-thumbs-up"
-                                                    data-count="like">{{ comment.votes.likes.count }}</i>
+                                                    data-count="like"> {{ com_re.votes.likes.count }}</i>
                                             </a>
-                                            <a data-id="{{ comment.id }}" data-type="comment" data-action="dislike"><i
+                                            <a data-id="{{ com_re.id }}" data-type="comment"
+                                               data-action="dislike"
+                                               {% if com_re.votes.dislikes.all|user_in:user %}style="background: #e53637"{% endif %}
+                                               id="dislikecheck"><i
                                                     class="far fa-thumbs-down"
-                                                    data-count="dislike">{{ comment.votes.dislikes.count }}</i>
+                                                    data-count="dislike"> {{ com_re.votes.dislikes.count }}</i>
                                             </a>
-
                                             <a href="#formComment"
                                                onclick="addCommentReply('{{ comment.name }}', '{{ comment.id }}')">Ответить</a>
-
                                         </div>
                                     </div>
-                                    {% for com_re in comment.comment_set.all %}
-                                        <div class="blog__details__comment__item blog__details__comment__item--reply">
-                                            <div class="blog__details__comment__item__pic">
-                                                <img src="{% static 'img/blog/details/default_comment.png' %}" alt="">
-                                            </div>
-                                            <div class="blog__details__comment__item__text">
-                                                <span>{{ com_re.created }}</span>
-                                                <h5>{{ com_re.name }}</h5>
-                                                <p>{{ com_re.text }}</p>
-                                                <a data-id="{{ com_re.id }}" data-type="comment" data-action="like"><i
-                                                        class="far fa-thumbs-up"
-                                                        data-count="like">{{ com_re.votes.likes.count }}</i>
-                                                </a>
-                                                <a data-id="{{ com_re.id }}" data-type="comment"
-                                                   data-action="dislike"><i
-                                                        class="far fa-thumbs-down"
-                                                        data-count="dislike">{{ com_re.votes.dislikes.count }}</i>
-                                                </a>
-                                                <a href="#formComment"
-                                                   onclick="addCommentReply('{{ comment.name }}', '{{ comment.id }}')">Ответить</a>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
                                 {% endfor %}
-                            </div>
-                            <div class="blog__details__form">
-                                <h4>Оставить коммент</h4>
-                                <form action="{% url 'news:add_comment' post.slug %}" id="formComment" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="parent" id="contactparent" value="">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6 col-sm-6">
-                                            <input type="text" placeholder="Имя" name="name" id="contactusername"
-                                                   required="">
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6">
-                                            <input type="text" placeholder="Email" name="email" id="contactemail"
-                                                   required="">
-                                        </div>
-                                        <div class="col-lg-12">
+                            {% endfor %}
+                        </div>
+                        <div class="blog__details__form">
+                            <h4>Оставить коммент</h4>
+                            <form action="{% url 'news:add_comment' post.slug %}" id="formComment" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="parent" id="contactparent" value="">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <input type="text" placeholder="Имя" name="name" id="contactusername"
+                                               required="">
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <input type="text" placeholder="Email" name="email" id="contactemail"
+                                               required="">
+                                    </div>
+                                    <div class="col-lg-12">
                                         <textarea placeholder="Сообщение" name="text" id="contactcomment"
                                                   required=""></textarea>
-                                            <button type="submit" class="site-btn">Send Message</button>
-                                        </div>
+                                        <button type="submit" class="site-btn">Send Message</button>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </section>
     <!-- Blog Details Section End -->
     <script>

@@ -39,6 +39,30 @@ class MainPage(ListView):
         return context
 
 
+class CategoryListView(ListView):
+    model = Post
+    template_name = 'news/category_post_list.html'
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        p = Paginator(Post.objects.select_related().filter(category__name=self.kwargs.get('category_name')), self.paginate_by)
+        context['posts'] = p.page(context['page_obj'].number)
+        context['comments'] = Comment.objects.all().order_by('-created')[:3]
+        context['popular_day'] = Post.objects.all().filter(
+            publish__range=[timezone.now() - timezone.timedelta(days=1), timezone.now()]).annotate(
+            sum_views=Sum('views'), sum_votes=Sum('votes')).order_by('-sum_views', 'sum_votes')[:3]
+        context['popular_week'] = Post.objects.all().filter(
+            publish__range=[timezone.now() - timezone.timedelta(days=7), timezone.now()]).annotate(
+            sum_views=Sum('views'), sum_votes=Sum('votes')).order_by('-sum_views', 'sum_votes')[:3]
+        context['popular_month'] = Post.objects.all().filter(
+            publish__range=[timezone.now() - timezone.timedelta(days=30), timezone.now()]).annotate(
+            sum_views=Sum('views'), sum_votes=Sum('votes')).order_by('-sum_views', 'sum_votes')[:3]
+        context['popular_years'] = Post.objects.all().annotate(
+            sum_views=Sum('views'), sum_votes=Sum('votes')).order_by('-sum_views', 'sum_votes')[:3]
+        return context
+
+
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     post.views += 1

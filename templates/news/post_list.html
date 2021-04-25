@@ -62,7 +62,7 @@
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <div class="btn__all">
-                                    <a href="#" class="primary-btn">View All <span class="arrow_right"></span></a>
+                                    <a href="{% url 'news:category_post_list' 'Новости' %}" class="primary-btn">Смотреть все <span class="arrow_right"></span></a>
                                 </div>
                             </div>
                         </div>
@@ -71,7 +71,10 @@
                                 <div class="col-lg-6 col-md-6 col-sm-6">
                                     <div class="product__item">
                                         <div class="product__item__pic set-bg" data-setbg="{{ post.image.url }}">
-                                            <div class="ep"><i class="fas fa-fire-alt"></i> {{ post.votes.sum_rating }}</div>
+                                            <div class="ep">{% if post.votes.sum_rating < 0 %}
+                                                <i class="fas fa-poop ">{% else %}
+                                                <i class="fas fa-fire-alt">{% endif %}</i> {{ post.votes.sum_rating }}
+                                            </div>
                                             <div class="comment"><i
                                                     class="fa fa-comments"></i> {{ post.comment_set.count }}</div>
                                             <div class="view"><i
@@ -105,23 +108,35 @@
                         </div>
                         <div class="row">
                             {% for album in albums %}
-                            <div class="col-lg-4 col-md-6 col-sm-6">
-                                <div class="product__item">
-                                    <div class="product__item__pic set-bg"
-                                         data-setbg="{{ album.cover.url }}">
-                                        <div class="ep">18 / 18</div>
-                                        <div class="comment"><i class="fa fa-comments"></i> {{ album.review_set.count }}</div>
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <div class="product__item">
+                                        <div class="product__item__pic set-bg"
+                                             data-setbg="{{ album.cover.url }}">
+                                            <div class="ep">{% if post.votes.sum_rating < 0 %}
+                                                <i class="fas fa-poop ">{% else %}
+                                                <i class="fas fa-fire-alt">{% endif %}</i> {{ post.votes.sum_rating }}
+                                            </div>
+                                            <div class="comment"><i
+                                                    class="fa fa-comments"></i> {{ album.review_set.count }}</div>
 
-                                    </div>
-                                    <div class="product__item__text">
-                                        <ul>
-                                            <li>{{ album.band.name }}</li>
+                                        </div>
+                                        <div class="product__item__text">
+                                            <ul>
+{#                                                {% for tag in album.tags.all %}#}
+{#                                                    <li>{{ tag }}</li>#}
+{#                                                {% endfor %}#}
+                                                <li>{{ album.band.name }}</li>
+                                                {% for style in album.band.styles.all %}
+                                                    <li>{{ style.name }}</li>
+                                                {% endfor %}
+                                                <li>{{ album.band.country }}</li>
 
-                                        </ul>
-                                        <h5><a href="#">{{ album.name }}</a></h5>
+
+                                            </ul>
+                                            <h5><a href="#">{{ album.band.name }} - {{ album.name }}</a></h5>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             {% endfor %}
                         </div>
                     </div>

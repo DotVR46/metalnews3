@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.template.defaultfilters import slugify as django_slugify
+from taggit.managers import TaggableManager
 
 alphabet = {'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
             'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
@@ -92,27 +93,27 @@ class Category(models.Model):
         return self.name
 
 
-class Tag(models.Model):
-    title = models.CharField('Название', max_length=50)
-    slug = models.SlugField(max_length=50, unique=True, blank=True)
-
-    class Meta:
-        verbose_name = 'Тег'
-        verbose_name_plural = 'Теги'
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-        super(Tag, self).save(*args, **kwargs)
-
-    # def get_absolute_url(self):
-    #     return reverse('tag-detail-url', kwargs={'slug': self.slug})
-    #
-    # def get_update_url(self):
-    #     return reverse('tag-update-url', kwargs={'slug': self.slug})
-
-    def __str__(self):
-        return self.title
+# class Tag(models.Model):
+#     title = models.CharField('Название', max_length=50)
+#     slug = models.SlugField(max_length=50, unique=True, blank=True)
+#
+#     class Meta:
+#         verbose_name = 'Тег'
+#         verbose_name_plural = 'Теги'
+#
+#     def save(self, *args, **kwargs):
+#         if not self.slug:
+#             self.slug = slugify(self.title)
+#         super(Tag, self).save(*args, **kwargs)
+#
+#     # def get_absolute_url(self):
+#     #     return reverse('tag-detail-url', kwargs={'slug': self.slug})
+#     #
+#     # def get_update_url(self):
+#     #     return reverse('tag-update-url', kwargs={'slug': self.slug})
+#
+#     def __str__(self):
+#         return self.title
 
 
 class Post(models.Model):
@@ -133,7 +134,7 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     slug = models.SlugField(max_length=200, blank=True, unique=True)
-    tags = models.ManyToManyField(Tag, verbose_name='Теги', blank=True, related_name='post_tags')
+    tags = TaggableManager()
     views = models.PositiveIntegerField(default=0)
     votes = GenericRelation(LikeDislike, related_query_name='posts')
 
@@ -251,6 +252,7 @@ class Album(models.Model):
     cover = models.ImageField(verbose_name='Обложка', upload_to=get_covers_upload_path)
     slug = models.SlugField(max_length=160, unique=True, blank=True)
     votes = GenericRelation(LikeDislike, related_query_name='albums')
+    tags = TaggableManager()
 
     def save(self, *args, **kwargs):
         if not self.slug:
