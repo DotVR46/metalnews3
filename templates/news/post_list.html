@@ -9,42 +9,21 @@
     <section class="hero">
         <div class="container">
             <div class="hero__slider owl-carousel">
-                <div class="hero__items set-bg" data-setbg="img/hero/hero-1.jpg">
+                {% for post in posts|slice:3 %}
+
+                <div class="hero__items set-bg" data-setbg="{{ post.image.url }}">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="hero__text">
-                                <div class="label">Adventure</div>
-                                <h2>Fate / Stay Night: Unlimited Blade Works</h2>
-                                <p>After 30 days of travel across the world...</p>
-                                <a href="#"><span>Watch Now</span> <i class="fa fa-angle-right"></i></a>
+
+                                <h2>{{ post.title }}</h2>
+                                <p>{{ post.content|truncatewords:10|safe }}</p>
+                                <a href="{% url 'news:post_detail' post.slug %}"><span>Читать</span></a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="hero__items set-bg" data-setbg="{% static 'img/hero/hero-1.jpg' %}">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="hero__text">
-                                <div class="label">Adventure</div>
-                                <h2>Fate / Stay Night: Unlimited Blade Works</h2>
-                                <p>After 30 days of travel across the world...</p>
-                                <a href="#"><span>Watch Now</span> <i class="fa fa-angle-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero__items set-bg" data-setbg="{% static 'img/hero/hero-1.jpg' %}">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="hero__text">
-                                <div class="label">Adventure</div>
-                                <h2>Fate / Stay Night: Unlimited Blade Works</h2>
-                                <p>After 30 days of travel across the world...</p>
-                                <a href="#"><span>Watch Now</span> <i class="fa fa-angle-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -112,9 +91,9 @@
                                     <div class="product__item">
                                         <div class="product__item__pic set-bg"
                                              data-setbg="{{ album.cover.url }}">
-                                            <div class="ep">{% if post.votes.sum_rating < 0 %}
+                                            <div class="ep">{% if album.votes.sum_rating < 0 %}
                                                 <i class="fas fa-poop ">{% else %}
-                                                <i class="fas fa-fire-alt">{% endif %}</i> {{ post.votes.sum_rating }}
+                                                <i class="fas fa-fire-alt">{% endif %}</i> {{ album.votes.sum_rating }}
                                             </div>
                                             <div class="comment"><i
                                                     class="fa fa-comments"></i> {{ album.review_set.count }}</div>
@@ -133,7 +112,7 @@
 
 
                                             </ul>
-                                            <h5><a href="#">{{ album.band.name }} - {{ album.name }}</a></h5>
+                                            <h5><a href="{% url 'news:album_detail' album.slug %}">{{ album.band.name }} - {{ album.name }}</a></h5>
                                         </div>
                                     </div>
                                 </div>

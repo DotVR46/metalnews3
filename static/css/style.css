@@ -191,6 +191,7 @@ ol {
 	text-transform: uppercase;
 	display: inline-block;
 	padding: 12px 30px;
+	margin-bottom: 20px;
 }
 
 /* Preloder */
@@ -519,7 +520,7 @@ ol {
 	letter-spacing: 2px;
 	text-transform: uppercase;
 	padding: 14px 20px;
-	border-radius: 4px 0 0 4px;
+	border-radius: 4px;
 	margin-right: 1px;
 }
 
@@ -662,7 +663,7 @@ ol {
 }
 
 
-.product__item__pic .ep {
+.anime__details__pic .ep, .product__item__pic .ep {
 	font-size: 13px;
 	color: #ffffff;
 	background: #e53637;
@@ -969,7 +970,8 @@ ol {
 }
 
 .anime__details__pic {
-	height: 440px;
+	height: 250px;
+	width: 250px;
 	border-radius: 5px;
 	position: relative;
 }
@@ -1104,6 +1106,9 @@ ol {
 .anime__details__review {
 	margin-bottom: 55px;
 }
+.anime__details__form {
+	margin-bottom: 55px;
+}
 
 .anime__review__item {
 	overflow: hidden;
@@ -1131,7 +1136,7 @@ ol {
 .anime__review__item__pic img {
 	height: 50px;
 	width: 50px;
-	border-radius: 50%;
+	/*border-radius: 50%;*/
 }
 
 .anime__review__item__text {
@@ -1551,7 +1556,7 @@ ol {
 	border-top: 1px solid rgba(255, 255, 255, 0.2);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 	padding: 20px 0 15px;
-	margin-bottom: 65px;
+	margin-bottom: 30px;
 }
 
 .blog__details__btns__item {
@@ -1642,7 +1647,7 @@ ol {
 }
 
 .blog__details__form {
-	padding-top: 50px;
+	/*padding-top: 50px;*/
 }
 
 .blog__details__form h4 {

@@ -5,12 +5,12 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 from django.contrib.contenttypes.models import ContentType
 # Create your views here.
 from news.models import Post, Category, Album, Comment, LikeDislike
-from .forms import CommentForm
+from .forms import CommentForm, ReviewForm
 
 
 class MainPage(ListView):
@@ -87,6 +87,22 @@ class AddComment(View):
             form.save()
         return redirect(post.get_absolute_url())
 
+class AddReview(View):
+    """Отзыв"""
+
+    def post(self, request, slug):
+        form = ReviewForm(request.POST)
+        album = Album.objects.get(slug=slug)
+        user = request.user
+        if form.is_valid():
+            form = form.save(commit=False)
+            if request.POST.get('parent', None):
+                form.parent_id = int(request.POST.get('parent'))
+            form.album = album
+            form.user = user
+            form.save()
+        return redirect(album.get_absolute_url())
+
 
 class VotesView(View):
     model = None  # Модель данных - Статьи или Комментарии
@@ -118,3 +134,9 @@ class VotesView(View):
             }),
             content_type="application/json"
         )
+
+class AlbumDetailView(DetailView):
+    model = Album
+    template_name = 'news/album_detail.html'
+    context_object_name = 'album'
+

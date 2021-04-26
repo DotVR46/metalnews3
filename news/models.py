@@ -44,14 +44,14 @@ class LikeDislikeManager(models.Manager):
         # Забираем суммарный рейтинг
         return self.get_queryset().aggregate(Sum('vote')).get('vote__sum') or 0
 
-    def articles(self):
+    def posts(self):
         return self.get_queryset().filter(content_type__model='post').order_by('-posts__publish')
 
     def comments(self):
         return self.get_queryset().filter(content_type__model='comment').order_by('-comments__publish')
 
     def albums(self):
-        return self.get_queryset().filter(content_type__model='album').order_by('-albums__release_date')
+        return self.get_queryset().filter(content_type__model='album').order_by('albums__release_date')
 
     def bands(self):
         return self.get_queryset().filter(content_type__model='band').order_by('-bands__name')
@@ -261,6 +261,12 @@ class Album(models.Model):
 
     def __str__(self):
         return f'{self.band.name} - {self.name} {self.release_date.year}'
+
+    def get_absolute_url(self):
+        return reverse('news:album_detail', kwargs={'slug': self.slug})
+
+    def get_review(self):
+        return self.review_set.filter(parent__isnull=True)
 
     class Meta:
         verbose_name = 'Альбом'
